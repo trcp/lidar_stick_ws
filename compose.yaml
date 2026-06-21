@@ -1,0 +1,63 @@
+# =============================================================================
+# Livox Mid360 + GLIM 用 docker compose
+#   起動例:
+#     xhost +local:root                      # RViz / GLIM viewer を表示する場合
+#     docker compose build
+#     docker compose up -d
+#     docker compose exec livox bash
+#       # 1) Mid360 ドライバ起動 (PointCloud2 を出す msg_MID360 推奨)
+#       $ ros2 launch livox_ros_driver2 msg_MID360_launch.py
+#       # 2) 別シェルで GLIM を起動 (設定は lidar_stick_map/config を指定)
+#       $ ros2 run glim_ros glim_rosnode \
+#             --ros-args -p config_path:=/root/ros2_ws/lidar_stick_map/config
+# =============================================================================
+services:
+  livox:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: livox-mid360:humble
+    container_name: livox_mid360
+
+    # Mid360 とは UDP で直接通信するため host ネットワークが必須
+    network_mode: host
+
+    # GPU (NVIDIA Container Toolkit) を利用
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    # runtime: nvidia
+
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+      # RViz など GUI を使う場合
+      - DISPLAY=${DISPLAY}
+      - QT_X11_NO_MITSHM=1
+      # 同一サブネット内の DDS 通信のみに限定したい場合は適宜変更
+      - ROS_DOMAIN_ID=0
+
+    volumes:
+      # X11 (GUI 表示用)
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      # Mid360 の接続設定 (ホスト IP / LiDAR IP) を上書きする
+      - ./config/MID360_config.json:/root/colcon_ws/src/livox_ros_driver2/config/MID360_config.json:rw
+      # マップ等の成果物をホストと共有
+      - ./lidar_stick_map:/root/colcon_ws/lidar_stick_map:rw
+      - ./config_glim:/root/config_glim
+      # lidar_localization_ros2 のソースをホスト側で管理する。
+      # Dockerfile が clone した同パスを実行時にこのディレクトリで上書き(shadow)するため、
+      # コンテナ内の編集が消えず、ホストでの編集がそのまま反映される。
+      # --symlink-install のおかげで launch/param の変更は再ビルド不要で反映される。
+      - ./lidar_localization_ros2:/root/colcon_ws/src/lidar_localization_ros2:rw
+
+    # デバイスとの低遅延通信のため
+    privileged: true
+
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
