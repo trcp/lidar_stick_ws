@@ -37,7 +37,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         ros-humble-nav2-lifecycle-manager \
     && rm -rf /var/lib/apt/lists/*
 
-
 # -----------------------------------------------------------------------------
 # Livox-SDK2 のビルド & インストール
 # -----------------------------------------------------------------------------
@@ -80,12 +79,6 @@ RUN git clone -b humble https://github.com/rsasaki0109/ndt_omp_ros2.git \
     && git clone https://github.com/rsasaki0109/lidar_localization_ros2.git \
         ${ROS_WS}/src/lidar_localization_ros2
 
-# ホストの lidar_stick 用の param / launch を clone 済みパッケージへ上書きコピーする
-COPY lidar_stick_localization.yaml \
-        ${ROS_WS}/src/lidar_localization_ros2/param/lidar_stick_localization.yaml
-COPY lidar_stick_localization.launch.py \
-        ${ROS_WS}/src/lidar_localization_ros2/launch/lidar_stick_localization.launch.py
-
 # rosdep で不足依存 (pcl_ros 等) を解決する
 RUN /bin/bash -c "source /opt/ros/humble/setup.bash \
     && apt-get update \
@@ -96,12 +89,17 @@ RUN /bin/bash -c "source /opt/ros/humble/setup.bash \
     && rosdep install --from-paths ${ROS_WS}/src --ignore-src -r -y \
     && rm -rf /var/lib/apt/lists/*"
 
+# ホストの lidar_stick 用の param / launch を clone 済みパッケージへ上書きコピーする
+COPY lidar_stick_localization.yaml \
+        ${ROS_WS}/src/lidar_localization_ros2/param/lidar_stick_localization.yaml
+COPY lidar_stick_localization.launch.py \
+        ${ROS_WS}/src/lidar_localization_ros2/launch/lidar_stick_localization.launch.py
+
 # colcon build (livox は ROS2/Humble 用の cmake 引数が必要)
 RUN /bin/bash -c "source /opt/ros/humble/setup.bash \
     && cd ${ROS_WS} \
     && colcon build --symlink-install \
         --cmake-args -DROS_EDITION=ROS2 -DDISTRO_ROS=humble --cmake-clean-cache"
-
 
 # -----------------------------------------------------------------------------
 # pointcloud_to_2dmap (koide3) : PCD から 2D 占有格子地図 (pgm/yaml) を生成
@@ -117,7 +115,6 @@ RUN git clone https://github.com/koide3/pointcloud_to_2dmap.git /opt/pointcloud_
     && cmake .. \
     && make -j"$(nproc)" \
     && cp pointcloud_to_2dmap /usr/local/bin/
-
 
 # -----------------------------------------------------------------------------
 # entrypoint

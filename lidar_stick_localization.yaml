@@ -8,8 +8,8 @@
     ros__parameters:
       # ---- レジストレーション (スキャンマッチング) --------------------------
       registration_method: "NDT_OMP"        # NDT_OMP / GICP_OMP / VGICP (small_gicp ビルド時)
-      score_threshold: 2.0
-      ndt_resolution: 1.0                    # 屋内で精度が要る場合は 0.5 程度に下げる
+      score_threshold: 6.0
+      ndt_resolution: 1.0                   # 屋内で精度が要る場合は 0.5 程度に下げる
       ndt_step_size: 0.1
       ndt_num_threads: 4
       ndt_max_iterations: 35
@@ -18,7 +18,7 @@
       vgicp_voxel_resolution: 1.0
       transform_epsilon: 0.01
       voxel_leaf_size: 0.2                   # 入力スキャンのダウンサンプル
-      scan_max_range: 70.0                   # MID360 の有効レンジに合わせる
+      scan_max_range: 100.0                   # MID360 の有効レンジに合わせる
       scan_min_range: 0.5                    # 自己反射の点を除外
       scan_period: 0.1
 
@@ -48,7 +48,7 @@
       # まずは純 NDT で立ち上げる。MID360 の IMU を使うなら true にし、
       # launch 側で base_link->livox_frame と livox_frame->imu_link の TF を確認すること。
       use_imu: false
-      use_imu_preintegration: true
+      use_imu_preintegration: false
       imu_preintegration_use_base_frame_transform: false
       imu_prediction_correction_guard_translation_m: 2.0
       imu_prediction_correction_guard_yaw_deg: 4.0
