@@ -10,6 +10,23 @@ fi
 # Dynamically resolve project root directory (one level up from scripts/)
 ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 
+# Determine if CUDA should be used (Auto-detect via nvcc availability, can be overridden by USE_CUDA)
+if [ -n "$USE_CUDA" ]; then
+    if [ "$USE_CUDA" = "ON" ] || [ "$USE_CUDA" = "1" ] || [ "$USE_CUDA" = "true" ]; then
+        BUILD_WITH_CUDA=ON
+    else
+        BUILD_WITH_CUDA=OFF
+    fi
+else
+    if command -v nvcc &> /dev/null; then
+        echo "CUDA compiler (nvcc) found. Enabling CUDA support."
+        BUILD_WITH_CUDA=ON
+    else
+        echo "CUDA compiler (nvcc) NOT found. Disabling CUDA support."
+        BUILD_WITH_CUDA=OFF
+    fi
+fi
+
 echo "=== 1. Building Livox-SDK2 ==="
 cd "$ROOT_DIR/src/Livox-SDK2"
 mkdir -p build && cd build
@@ -39,7 +56,7 @@ cd "$ROOT_DIR/src/gtsam_points"
 mkdir -p build && cd build
 cmake .. -DCMAKE_BUILD_TYPE=Release \
          -DCMAKE_INSTALL_PREFIX="$CONDA_PREFIX" \
-         -DBUILD_WITH_CUDA=ON \
+         -DBUILD_WITH_CUDA="$BUILD_WITH_CUDA" \
          -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 make -j"$(nproc)"
 make install
@@ -59,6 +76,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release \
          -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
          -DCMAKE_USE_RESPONSE_FILE_FOR_INCLUDES=ON \
          -DCMAKE_USE_RESPONSE_FILE_FOR_OBJECTS=ON \
+         -DBUILD_WITH_CUDA="$BUILD_WITH_CUDA" \
          -DCMAKE_CXX_FLAGS="-include cstdint"
 make -j"$(nproc)"
 make install
