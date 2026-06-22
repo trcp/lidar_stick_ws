@@ -1,6 +1,6 @@
 {
   "glim_ros": {
-    "acc_scale": 9.8,
+    "acc_scale": 0.0,
     "base_frame_id": "",
     "enable_global_mapping": true,
     "enable_local_mapping": true,

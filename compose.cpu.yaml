@@ -22,16 +22,6 @@ services:
     # Mid360 とは UDP で直接通信するため host ネットワークが必須
     network_mode: host
 
-    # GPU (NVIDIA Container Toolkit) を利用
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
-    # runtime: nvidia
-
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_DRIVER_CAPABILITIES=all
@@ -48,7 +38,8 @@ services:
       - ./config/MID360_config.json:/root/colcon_ws/src/livox_ros_driver2/config/MID360_config.json:rw
       # マップ等の成果物をホストと共有
       - ./lidar_stick_map:/root/colcon_ws/lidar_stick_map:rw
-      - ./config_glim:/root/config_glim
+      # CPU 版は CPU 用 GLIM 設定 (config_glim_cpu) をマウントする
+      - ./config_glim_cpu:/root/config_glim
       # GLIM のダンプ先 (/tmp/dump) をホストの ./dump と共有する
       - ./dump:/tmp/dump:rw
       # rviz2 の設定ファイル (run スクリプトが rviz2 -d で読む)
