@@ -59,7 +59,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release \
          -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
          -DCMAKE_USE_RESPONSE_FILE_FOR_INCLUDES=ON \
          -DCMAKE_USE_RESPONSE_FILE_FOR_OBJECTS=ON \
-         -DCMAKE_CXX_FLAGS="-include cstdint -include $ROOT_DIR/include_hack/fmt_hack.h"
+         -DCMAKE_CXX_FLAGS="-include cstdint -include $ROOT_DIR/scripts/compat/fmt_hack.h"
 make -j"$(nproc)"
 make install
 
