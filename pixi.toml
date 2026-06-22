@@ -1,0 +1,83 @@
+[workspace]
+name = "lidar_stick_ws"
+version = "0.1.0"
+description = "Pixi environment for Livox Mid360 + GLIM mapping"
+channels = ["robostack-humble", "conda-forge"]
+platforms = ["linux-64"]
+
+[dependencies]
+# Python
+python = "3.12.*"
+pip = "*"
+numpy = "*"
+
+# Compilers & Build Tools
+compilers = ">=1.0"
+cmake = ">=3.20"
+ninja = "*"
+pkg-config = "*"
+make = "*"
+
+# ROS2 Humble Core & Tools
+ros-humble-desktop = "*"
+ros-humble-nav2-map-server = "*"
+ros-humble-nav2-lifecycle-manager = "*"
+ros-humble-pcl-ros = "*"
+ros-humble-pcl-conversions = "*"
+ros-humble-tf2-sensor-msgs = "*"
+ros-humble-cv-bridge = "*"
+ros-humble-image-transport = "*"
+ros-humble-ros-environment = "*"
+
+# colcon build tools
+colcon-common-extensions = "*"
+
+# OpenGL / Windowing Libraries for iridescence/glim
+glfw = "*"
+glew = "*"
+
+
+
+
+
+
+
+[activation]
+scripts = ["scripts/activate.sh"]
+
+[activation.env]
+CUDA_HOME = "/opt/cuda"
+PATH = "/opt/cuda/bin:$PATH"
+LD_LIBRARY_PATH = "/opt/cuda/lib64:$LD_LIBRARY_PATH"
+
+[tasks]
+# Clone external repositories and apply compatibility patches
+clone-deps = "chmod +x scripts/clone_deps.sh && ./scripts/clone_deps.sh"
+
+# Build all external C++ dependencies and install into Pixi env
+build-deps = "chmod +x scripts/build_deps.sh && ./scripts/build_deps.sh"
+
+# Build the ROS2 workspace packages (excluding ignored C++ projects)
+build = "chmod +x scripts/build_workspace.sh && ./scripts/build_workspace.sh"
+
+# Complete entrypoint setup: clones repositories, builds dependencies, and builds the workspace
+setup = "pixi run clone-deps && pixi run build-deps && pixi run build"
+
+# Launch Livox Mid360 Driver
+launch-driver = "ros2 launch lidar_localization_ros2 livox_mid360.launch.py user_config_path:=config/MID360_config.json"
+
+# Launch GLIM SLAM node
+launch-glim = "ros2 run glim_ros glim_rosnode --ros-args -p config_path:=$PWD/config_glim"
+
+# Launch RViz2 with workspace config
+rviz = "rviz2 -d src/lidar_localization_ros2/lidar_stick.rviz"
+
+# Launch self-localization launch file
+launch-localization = "ros2 launch lidar_localization_ros2 lidar_stick_localization.launch.py"
+
+# Run all-in-one localization script (driver + RViz2 + localization)
+run-localization = "chmod +x scripts/run_localization.sh && ./scripts/run_localization.sh"
+
+# Run all-in-one mapping script (driver + GLIM)
+run-mapping = "chmod +x scripts/run_make_map.sh && ./scripts/run_make_map.sh"
+
