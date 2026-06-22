@@ -66,4 +66,23 @@ if [ ! -d "glim_ros2" ]; then
     git clone https://github.com/koide3/glim_ros2.git
 fi
 
-echo "Workspace cloning completed!"
+echo "=== Applying local compatibility patches ==="
+
+# Apply patch for ndt_omp_ros2 if not already applied
+if git -C ndt_omp_ros2 apply --reverse --check "$ROOT_DIR/patches/ndt_omp_pcl115.patch" >/dev/null 2>&1; then
+    echo "ndt_omp_ros2 patch already applied."
+else
+    echo "Applying PCL 1.15 patch to ndt_omp_ros2..."
+    git -C ndt_omp_ros2 apply "$ROOT_DIR/patches/ndt_omp_pcl115.patch"
+fi
+
+# Apply patch for glim if not already applied
+if git -C glim apply --reverse --check "$ROOT_DIR/patches/glim_fmt_v12.patch" >/dev/null 2>&1; then
+    echo "glim patch already applied."
+else
+    echo "Applying fmt v12 patch to glim..."
+    git -C glim apply "$ROOT_DIR/patches/glim_fmt_v12.patch"
+fi
+
+echo "Workspace cloning and patching completed!"
+

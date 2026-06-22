@@ -18,4 +18,4 @@ colcon build --symlink-install --cmake-args \
   -DCMAKE_USE_RESPONSE_FILE_FOR_OBJECTS=ON \
   -DPython_EXECUTABLE="$CONDA_PREFIX/bin/python" \
   -DCMAKE_CXX_STANDARD=17 \
-  -DCMAKE_CXX_FLAGS="-include cstdint -I$ROOT_DIR/scripts/compat"
+  -DCMAKE_CXX_FLAGS="-include cstdint"
