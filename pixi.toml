@@ -76,8 +76,8 @@ rviz = "rviz2 -d src/lidar_localization_ros2/lidar_stick.rviz"
 launch-localization = "ros2 launch lidar_localization_ros2 lidar_stick_localization.launch.py"
 
 # Run all-in-one localization script (driver + RViz2 + localization)
-run-localization = "chmod +x run_localization.sh && ./run_localization.sh"
+run-localization = "chmod +x scripts/run_localization.sh && ./scripts/run_localization.sh"
 
 # Run all-in-one mapping script (driver + GLIM)
-run-mapping = "chmod +x run_make_map.sh && ./run_make_map.sh"
+run-mapping = "chmod +x scripts/run_make_map.sh && ./scripts/run_make_map.sh"
 
