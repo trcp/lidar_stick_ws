@@ -48,14 +48,17 @@ PATH = "/opt/cuda/bin:$PATH"
 LD_LIBRARY_PATH = "/opt/cuda/lib64:$LD_LIBRARY_PATH"
 
 [tasks]
-# Run setup workspace script
-setup = "chmod +x scripts/setup_workspace.sh && ./scripts/setup_workspace.sh"
+# Clone external repositories and apply compatibility patches
+clone = "chmod +x scripts/setup_workspace.sh && ./scripts/setup_workspace.sh"
 
 # Build all external C++ dependencies and install into Pixi env
 build-deps = "chmod +x scripts/build_deps.sh && ./scripts/build_deps.sh"
 
 # Build the ROS2 workspace packages (excluding ignored C++ projects)
 build = "chmod +x scripts/build_workspace.sh && ./scripts/build_workspace.sh"
+
+# Complete entrypoint setup: clones repositories, builds dependencies, and builds the workspace
+setup = "pixi run clone && pixi run build-deps && pixi run build"
 
 # Source workspace setup and run interactive shell
 shell = "bash --init-file <(echo 'source .pixi/envs/default/etc/profile.d/conda.sh && conda activate default && [ -f install/setup.bash ] && source install/setup.bash')"
