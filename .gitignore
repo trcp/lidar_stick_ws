@@ -1,0 +1,28 @@
+# Pixi local environment
+.pixi/
+
+# ROS2 Colcon build artifacts
+build/
+install/
+log/
+
+# Thirdparty source dependencies (ignore cloned projects except our own project)
+/src/*
+!/src/lidar_localization_ros2/
+
+# SLAM / ROS2 Bag output and data
+lidar_stick_map/
+*.bag
+*.db3
+imgui.ini
+
+# IDE and temporary files
+.vscode/
+.idea/
+*.user
+build-local/
+*.pyc
+__pycache__/
+*~
+.*.swp
+
