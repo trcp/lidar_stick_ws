@@ -52,7 +52,7 @@ LD_LIBRARY_PATH = "/opt/cuda/lib64:$LD_LIBRARY_PATH"
 
 [tasks]
 # Clone external repositories and apply compatibility patches
-clone-deps = "chmod +x scripts/setup_workspace.sh && ./scripts/setup_workspace.sh"
+clone-deps = "chmod +x scripts/clone_deps.sh && ./scripts/clone_deps.sh"
 
 # Build all external C++ dependencies and install into Pixi env
 build-deps = "chmod +x scripts/build_deps.sh && ./scripts/build_deps.sh"
