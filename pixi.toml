@@ -42,6 +42,9 @@ glew = "*"
 
 
 
+[activation]
+scripts = ["scripts/activate.sh"]
+
 [activation.env]
 CUDA_HOME = "/opt/cuda"
 PATH = "/opt/cuda/bin:$PATH"
@@ -59,9 +62,6 @@ build = "chmod +x scripts/build_workspace.sh && ./scripts/build_workspace.sh"
 
 # Complete entrypoint setup: clones repositories, builds dependencies, and builds the workspace
 setup = "pixi run clone-deps && pixi run build-deps && pixi run build"
-
-# Source workspace setup and run interactive shell
-shell = "bash --init-file <(echo 'source .pixi/envs/default/etc/profile.d/conda.sh && conda activate default && [ -f install/setup.bash ] && source install/setup.bash')"
 
 # Launch Livox Mid360 Driver
 launch-driver = { cmd = "ros2 launch livox_ros_driver2 msg_MID360_launch.py", env = { MID360_CONFIG = "config/MID360_config.json" } }
