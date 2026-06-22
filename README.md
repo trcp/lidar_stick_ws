@@ -29,6 +29,8 @@ pixi run setup
 
 ## 実行・可視化
 
+### 個別ノードの起動
+
 * **Livox Mid360 ドライバの起動**:
   ```bash
   pixi run launch-driver
@@ -37,7 +39,26 @@ pixi run setup
   ```bash
   pixi run launch-glim
   ```
+* **自己位置推定 (Localization) ノードの起動**:
+  ```bash
+  pixi run launch-localization
+  ```
 * **RViz2 による可視化**:
   ```bash
   pixi run rviz
+  ```
+
+### オールインワン実行（推奨）
+
+ドライバや可視化、SLAM/Localizationなどを一括で起動する便利なタスクが用意されています。
+
+* **マッピング（地図作成）の実行**:
+  LivoxドライバとGLIM SLAMノードをまとめて起動します。
+  ```bash
+  pixi run run-mapping
+  ```
+* **自己位置推定（Localization）の実行**:
+  Livoxドライバ、RViz2、自己位置推定ノードをまとめて起動します。
+  ```bash
+  pixi run run-localization
   ```
