@@ -21,7 +21,7 @@ pixi run setup
 
 * **外部リポジトリの同期とパッチ適用**:
   ```bash
-  pixi run clone
+  pixi run clone-deps
   ```
 * **外部 C++ 依存関係のビルド**:
   ```bash
