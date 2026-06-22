@@ -64,7 +64,7 @@ build = "chmod +x scripts/build_workspace.sh && ./scripts/build_workspace.sh"
 setup = "pixi run clone-deps && pixi run build-deps && pixi run build"
 
 # Launch Livox Mid360 Driver
-launch-driver = { cmd = "ros2 launch livox_ros_driver2 rviz_MID360_launch.py", env = { MID360_CONFIG = "config/MID360_config.json" } }
+launch-driver = "ros2 launch lidar_localization_ros2 livox_mid360.launch.py user_config_path:=config/MID360_config.json"
 
 # Launch GLIM SLAM node
 launch-glim = "ros2 run glim_ros glim_rosnode --ros-args -p config_path:=$PWD/config_glim"
