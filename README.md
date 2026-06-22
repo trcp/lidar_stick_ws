@@ -1,7 +1,5 @@
 # lidar_stick_ws
 
-Pixi を用いて構築された、Livox Mid360 および GLIM SLAM 用の ROS 2 Humble 開発環境です。
-
 ## 前提条件
 - [Pixi](https://pixi.sh) がインストールされていること
 - CUDA ツールキット（GLIM の GPU 処理に必要）
