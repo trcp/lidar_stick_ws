@@ -35,6 +35,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         ros-humble-rviz-common \
         ros-humble-nav2-map-server \
         ros-humble-nav2-lifecycle-manager \
+        ros-humble-rosbridge-server \
     && rm -rf /var/lib/apt/lists/*
 
 # -----------------------------------------------------------------------------

@@ -13,8 +13,9 @@
 #     docker compose run で起動したコンテナ内で
 #       1) livox_ros_driver2 を background 起動 (PointCloud2 を出す)
 #       2) rviz2 を background 起動 (ホストの ./default.rviz を -d で読む)
-#       3) lidar_stick_localization.launch.py を foreground 起動 (Ctrl-C で終了)
-#     終了時に livox ドライバ / rviz2 も合わせて停止する。
+#       3) rosbridge_server を background 起動 (WebSocket ポート 9090)
+#       4) lidar_stick_localization.launch.py を foreground 起動 (Ctrl-C で終了)
+#     終了時に livox ドライバ / rviz2 / rosbridge も合わせて停止する。
 # =============================================================================
 set -euo pipefail
 
@@ -49,13 +50,17 @@ LIVOX_PID=$!
 rviz2 -d /root/default.rviz &
 RVIZ_PID=$!
 
+# 3) rosbridge_server を background 起動 (WebSocket ポート 9090)
+ros2 launch rosbridge_server rosbridge_websocket_launch.xml &
+ROSBRIDGE_PID=$!
+
 # ドライバが点群を出し始めるまで少し待つ
 sleep 3
 
-# ドライバ / rviz 終了時に localization も道連れにするためのトラップ
-trap 'kill $LIVOX_PID $RVIZ_PID 2>/dev/null || true' EXIT INT TERM
+# ドライバ / rviz / rosbridge 終了時に localization も道連れにするためのトラップ
+trap 'kill $LIVOX_PID $RVIZ_PID $ROSBRIDGE_PID 2>/dev/null || true' EXIT INT TERM
 
-# 3) lidar_localization_ros2 を foreground 起動 (Ctrl-C で終了)
+# 4) lidar_localization_ros2 を foreground 起動 (Ctrl-C で終了)
 #    パッケージはイメージにビルド済み (entrypoint で install/setup.bash を source)
 ros2 launch lidar_localization_ros2 lidar_stick_localization.launch.py
 EOS
